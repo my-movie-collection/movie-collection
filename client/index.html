@@ -6,18 +6,16 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-
+    
     <!-- Public CSS -->
     <link rel="stylesheet" href="./public/css/style.css">
 
     <title>My Movie Collections</title>
 </head>
 <body>
-    <nav class="nav justify-content-center bg-dark p-2 position-relative">
+    <nav id="nav" class="nav justify-content-center bg-dark p-2 position-relative">
         <a class="nav-link text-light" id="homeNav" href="#">Home</a>
         <a class="nav-link text-light" id="myMoviesNav" href="#">My Movies</a>
-        <a class="nav-link text-light" id="registerNav" href="#">Register</a>
-        <a class="nav-link text-light" id="loginNav" href="#">Login</a>
         <a class="nav-link text-light" id="logoutNav" href="#">Logout</a>
     </nav>
     <main>
@@ -94,55 +92,11 @@
                 <div class="row">
                     <div class="col">
                         <h2 class="mt-4 center">Movies</h2>
-                        <p class="center">Add movies to your collection </p>
+                        <p class="center">Add movies or animes to your collection </p>
                     </div>
                 </div>
-                <div class="justify-content-center card-container" id="todosListHome">
-                    <div class="card" style="width: 18rem;">
-                        <img src="..." class="card-img-top" alt="poster">
-                        <div class="card-body">
-                            <h5 class="card-title">Movie title</h5>
-                            <p class="card-text">[plot] Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">[genre] Cras justo odio</li>
-                            <li class="list-group-item">[year] Dapibus ac facilisis in</li>
-                            <li class="list-group-item">[imdbRating] Vestibulum at eros</li>
-                        </ul>
-                        <div class="card-body">
-                            <a href="#" class="btn btn-primary">Add to my collections</a>
-                        </div>
-                    </div>
-                    <div class="card" style="width: 18rem;">
-                        <img src="..." class="card-img-top" alt="poster">
-                        <div class="card-body">
-                            <h5 class="card-title">Movie title</h5>
-                            <p class="card-text">[plot] Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">[genre] Cras justo odio</li>
-                            <li class="list-group-item">[year] Dapibus ac facilisis in</li>
-                            <li class="list-group-item">[imdbRating] Vestibulum at eros</li>
-                        </ul>
-                        <div class="card-body">
-                            <a href="#" class="btn btn-primary">Add to my collections</a>
-                        </div>
-                    </div>
-                    <div class="card" style="width: 18rem;">
-                        <img src="..." class="card-img-top" alt="poster">
-                        <div class="card-body">
-                            <h5 class="card-title">Movie title</h5>
-                            <p class="card-text">[plot] Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">[genre] Cras justo odio</li>
-                            <li class="list-group-item">[year] Dapibus ac facilisis in</li>
-                            <li class="list-group-item">[imdbRating] Vestibulum at eros</li>
-                        </ul>
-                        <div class="card-body">
-                            <a href="#" class="btn btn-primary">Add to my collections</a>
-                        </div>
-                    </div>
+                <div class="d-inline-flex flex-row justify-content-center card-container" id="movieCards">
+                    
                 </div>
             </div>
         </div>
@@ -154,5 +108,91 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 
+    <!-- Script -->
+    <script>
+        const baseUrl = "http://localhost:3000"
+
+        function auth(){
+            if (!localStorage.getItem("access_token")){
+                $("#loginPage").show()
+                $("#registerPage").hide()
+                $("#nav").hide()
+                $("#homePage").hide()   
+            }else {
+                $("#loginPage").hide()
+                $("#registerPage").hide()
+                $("#nav").show()
+                $("#homePage").show()
+                home()
+            }
+        }
+
+        function login(){
+            const email = $("#logEmail").val();
+            const password = $("#logPassword").val();
+
+            $.ajax({
+                url: baseUrl + "/login",
+                method: "POST",
+                data: { email, password }
+            })
+            .done(response => {
+                localStorage.setItem('access_token', response.access_token)
+                auth()
+                home()
+            })
+            .fail((xhr, text) => {
+                console.log(xhr, text)
+            })
+            .always(_ => {
+                $("#formLogin").trigger('reset')
+            })
+        }
+
+        function home(){
+            $.ajax({
+                url: baseUrl + "/movies/film",
+                method: "GET",
+                headers: {
+                    access_token: localStorage.getItem('access_token')
+                }
+            })
+            .done(todos => { 
+                todos.forEach(el => {
+                    $("#movieCards").append(`
+                    <div class="card" style="width: 14.5rem;">
+                        <img src="${'https://image.tmdb.org/t/p/w500' + el.poster_path}" class="card-img-top" alt="poster">
+                        <div class="card-body">
+                            <h5 class="card-title">${el.title}</h5>
+                            <p class="card-text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iusto libero, iste rem possimus, dicta temporibus repellendus incidunt repellat eos ipsam enim error ea tenetur quidem cumque sunt at facilis animi.</p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">genre</li>
+                            <li class="list-group-item"> Release Year : ${el.release_date}</li>
+                            <li class="list-group-item">Vote : ${el.vote_average}</li>
+                        </ul>
+                        <div class="card-body">
+                            <a href="#" class="btn btn-primary">Add to my collections</a>
+                        </div>
+                    </div>
+                    `)
+                })
+            })
+            .fail((xhr, text) => {
+                console.log(xhr, text)
+            })
+        }
+
+        // Document ready
+        $(document).ready(() => {
+            auth()
+
+            $("#formLogin").on('submit', (e) => {
+                e.preventDefault()
+                login()
+            })
+        });
+
+    </script>
 </body>
 </html>

@@ -6,3 +6,17 @@
 .center {
     text-align: center;
 }
+
+.search {
+    align-items: center;
+    max-width: 50%;
+}
+
+.btn-search {
+    float: left;
+    margin-left: 30px;
+}
+
+div {
+    align-content: center;
+}
