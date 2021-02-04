@@ -18,8 +18,19 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   User.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING
+    email: {
+      type: DataTypes.STRING,
+      unique: true
+    },
+    password: {
+      type: DataTypes.STRING,
+      validate: {
+        len: {
+          args: [4, 16],
+          msg: 'Password harus 4 - 16 karakter'
+        }
+      }
+    }
   }, {
     sequelize,
     modelName: 'User',
