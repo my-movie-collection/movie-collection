@@ -15,6 +15,37 @@ class MovieController {
     .catch(err => next(err))
   }
 
+  static addMovie(req, res, next){
+    const title = req.query.t
+    const user_id = req.user.id
+    let movieData;
+    axios.get(`http://www.omdbapi.com/?apikey=b0de76c2&t=${title}`)
+    .then(({data}) => {
+      const newMovie = {
+        title: data.Title,
+        year: data.Year,
+        genre: data.Genre,
+        plot: data.Plot,
+        poster: data.Poster,
+        imdbRating: data.imdbRating
+      }
+      return Movie.create(newMovie)
+    })
+    .then(movie => {
+      movieData = movie
+      return Collection.create({
+        user_id,
+        movie_id: movie.id
+      })
+    })
+    .then(() => {
+      res.status(200).json(movieData)
+    })
+    .catch(err => {
+      next(err)
+    })
+  }
+
   // static listMovie(req, res, next){
   //   let film = ['taken', 'batman', 'superman', `Godzilla vs. Kong`, `Avengers: Endgame`, `The Wolf of Wall Street`, `Knives Out`, `The Shawshank Redemption`, `Split`]
   //   const movies = []

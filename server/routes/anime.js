@@ -5,6 +5,7 @@ const { authorize, authenticate } = require('../middlewares/auth')
 // router.use(authenticate)
 router.get('/', AnimeController.findAnime)
 router.get('/film', AnimeController.listAnime)
+router.post('/', AnimeController.addAnime)
 
 
 module.exports = router
