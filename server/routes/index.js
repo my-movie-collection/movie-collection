@@ -1,11 +1,14 @@
 const router = require('express').Router()
 const userRouter = require('./userRouter.js')
 const movieRouter = require('./movie')
+const animeRouter = require('./anime')
+const quote = require('./quote')
 const { authenticate } =  require('../middlewares/auth')
 
+router.use('/', quote)
 router.use('/', userRouter)
-
 router.use('/movies', movieRouter)
+router.use('/anime', animeRouter)
 
 router.use(authenticate)
 

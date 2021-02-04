@@ -1,11 +1,11 @@
 if (process.env.NODE_ENV !== 'production'){
   require('dotenv').config()
-  console.log('dotenv activated')
 }
 
 const express = require('express')
 const cors = require('cors')
 const router = require('./routes/index')
+const errorHandler = require('./middlewares/errorHandler')
 
 const app = express()
 const PORT = 3000
@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended : true }))
 
 // Routes
 app.use(router)
+app.use(errorHandler)
 
 // Listener
 app.listen(PORT, () => {
