@@ -1,10 +1,10 @@
 const router = require('express').Router()
-const MovieController = require('../controllers/MovieController')
+const AnimeController = require('../controllers/AnimeController')
 const { authorize, authenticate } = require('../middlewares/auth')
 
 // router.use(authenticate)
-router.get('/', MovieController.findMovie)
-router.get('/film', MovieController.listMovie)
+router.get('/', AnimeController.findAnime)
+router.get('/film', AnimeController.listAnime)
 
 
 module.exports = router
