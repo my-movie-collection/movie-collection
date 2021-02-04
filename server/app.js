@@ -1,4 +1,4 @@
-if (process.env.NODE_ENV == 'development'){
+if (process.env.NODE_ENV !== 'production'){
   require('dotenv').config()
   console.log('dotenv activated')
 }
@@ -22,5 +22,5 @@ app.use(router)
 
 // Listener
 app.listen(PORT, () => {
-  console.log('app running on port' + PORT)
+  console.log('app running on port ' + PORT)
 })
