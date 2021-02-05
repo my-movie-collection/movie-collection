@@ -104,6 +104,22 @@
                 </div>
             </div>
         </div>
+
+        <!-- My Collection-->
+        <div id="myCollection">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h2 class="mt-4 center">Movies</h2>
+                        <p class="center">Add movies or animes to your collection </p>
+                    </div>
+                </div>
+                <div class=" row row-cols-1 row-cols-md-2 g-3
+                justify-content-center card-container" id="collectionCards">
+                    
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Bootstrap js -->
@@ -124,11 +140,13 @@
                 $("#loginPage").show()
                 $("#registerPage").hide()
                 $("#nav").hide()
-                $("#homePage").hide()   
+                $("#homePage").hide()
+                $("#myCollection").hide()   
             }else {
                 $("#loginPage").hide()
                 $("#registerPage").hide()
                 $("#nav").show()
+                $("#myCollection").hide()   
                 $("#homePage").show()
                 home()
             }
@@ -163,9 +181,9 @@
                     access_token: localStorage.getItem('access_token')
                 }
             })
-            .done(todos => { 
+            .done(movies => { 
                 console.log('masuk nih')
-                todos.forEach(el  => {
+                movies.forEach(el  => {
                     $("#movieCards").append(`
                     <div class="card" style="width: 14.5rem;">
                         <img src="${'https://image.tmdb.org/t/p/w500' + el.poster_path}" class="card-img-top" alt="poster">
@@ -216,6 +234,67 @@
             $("#registerPage").show()
             $("#nav").hide()
             $("#homePage").hide()
+            $("#myCollection").hide()   
+
+        }
+
+        function showCollection() {
+            $("#loginPage").hide()
+            $("#registerPage").hide()
+            $("#nav").show()
+            $("#homePage").hide()
+            $("#myCollection").show()
+            $.ajax({
+                url: baseUrl + "/collections",
+                method: "GET",
+                headers: {
+                    access_token: localStorage.getItem('access_token')
+                }
+            })
+            .done(movies => {
+                console.log(movies)
+                $("#collectionCards").empty()
+                movies.forEach(el  => {
+                    $("#collectionCards").append(`
+                    <div class="card" style="width: 14.5rem;">
+                        <img src="${el.poster}" class="card-img-top" alt="poster">
+                        <div class="card-body">
+                            <h5 class="card-title">${el.title}</h5>
+                            <p class="card-text">${el.plot}</p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"> Genre : ${el.genre}</li>
+                            <li class="list-group-item"> Release Year : ${el.year}</li>
+                            <li class="list-group-item">Vote : ${el.imdbRating}</li>
+                        </ul>
+                        <div class="card-body">
+                            <button id="delete-button" class="btn btn-primary" type="button" name="title" onclick="deleteMovie(${el.id})">Delete</button>
+                        </div>
+                    </div>
+                    `)
+                })
+            })
+            .fail((xhr, text) => {
+                console.log(xhr, text)
+            })
+            .always(() => {
+            })
+        }
+
+        function deleteMovie(id) {
+            $.ajax({
+                url: baseUrl + `/collections/${id}`,
+                method: 'DELETE',
+                headers: {
+                    access_token: localStorage.getItem('access_token')
+                }
+            })
+            .done(response => {
+
+            })
+            .fail((xhr, text) => {
+                console.log(xhr)
+            })
         }
 
         function register(event){
@@ -257,7 +336,7 @@
                 }
             })
             .done(response => {
-
+                showCollection()
             })
             .fail(err => {
 
@@ -290,9 +369,15 @@
                 register(event)
             })
 
-            // $("#myMoviesNav").click(function(){
+            $("#myMoviesNav").click(function(){
+                // console.log('ini collection')
+                showCollection()
+            })
 
-            // })
+            $("#homeNav").click(function() {
+                $("#homePage").show()
+                $("#myCollection").hide()
+            })
         });
 
     </script>
