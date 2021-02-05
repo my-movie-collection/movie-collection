@@ -16,8 +16,9 @@ class MovieController {
   }
 
   static addMovie(req, res, next){
-    const title = req.query.t
+    const title = req.body.title
     const user_id = req.user.id
+    console.log(title, user_id, 'ini dalem findMovie')
     let movieData;
     axios.get(`http://www.omdbapi.com/?apikey=b0de76c2&t=${title}`)
     .then(({data}) => {
