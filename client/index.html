@@ -43,7 +43,7 @@
                                     <input type="email" class="form-control" id="regEmail" autocomplete="off">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
+                                    <label for="password" class="form-label" id="password">Password</label>
                                     <input type="password" class="form-control" id="regPassword" autocomplete="off">
                                 </div>
                                 <button type="submit" class="btn btn-primary">Register</button>
@@ -209,7 +209,40 @@
             .fail(err => {
                 console.log(err)
             })
-            }
+        }
+
+        function showRegister(){
+            $("#loginPage").hide()
+            $("#registerPage").show()
+            $("#nav").hide()
+            $("#homePage").hide()
+        }
+
+        function register(event){
+            event.preventDefault()
+            let email = $('#regEmail').val()
+            let password = $('#regPassword').val()
+            // console.log(email, password)
+
+            $.ajax({
+                method: 'POST',
+                url: `${baseUrl}/register`,
+                data: {email, password}
+            })
+            .done(response => {
+                console.log('register succeed')
+                auth()
+            })
+            .fail(err => {
+                console.log(err)
+                alert(err.responseJSON)
+            })
+            .always(() => {
+                $('#regEmail').val('')
+                $('#regPassword').val('')
+            })
+        }
+
         // Document ready
         $(document).ready(() => {
             auth()
@@ -226,6 +259,14 @@
                 auth2.signOut().then(function () {
                 console.log('User signed out.');
                 });
+            })
+
+            $("#btnregister").click(function(){
+                showRegister()
+            })
+
+            $("#formRegister").submit(function(event){
+                register(event)
             })
         });
 

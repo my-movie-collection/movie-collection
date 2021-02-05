@@ -6,13 +6,13 @@ const {OAuth2Client} = require('google-auth-library');
 class UserController{
   static register(req, res, next){
     let {email, password} = req.body
-    console.log(email, password)
+    // console.log(email, password)
     User.create({
       email,
       password
     })
     .then(user => {
-      console.log(user)
+      // console.log(user)
       let response = {
         id: user.id,
         email: user.email
