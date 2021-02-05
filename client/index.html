@@ -146,7 +146,6 @@
             .done(response => {
                 localStorage.setItem('access_token', response.access_token)
                 auth()
-                home()
             })
             .fail((xhr, text) => {
                 console.log(xhr, text)
@@ -166,21 +165,19 @@
             })
             .done(todos => { 
                 console.log('masuk nih')
-                todos.forEach(el => {
+                todos.forEach(el  => {
                     $("#movieCards").append(`
                     <div class="card" style="width: 14.5rem;">
                         <img src="${'https://image.tmdb.org/t/p/w500' + el.poster_path}" class="card-img-top" alt="poster">
                         <div class="card-body">
                             <h5 class="card-title">${el.title}</h5>
-                            <p class="card-text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iusto libero, iste rem possimus, dicta temporibus repellendus incidunt repellat eos ipsam enim error ea tenetur quidem cumque sunt at facilis animi.</p>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">genre</li>
                             <li class="list-group-item"> Release Year : ${el.release_date}</li>
                             <li class="list-group-item">Vote : ${el.vote_average}</li>
                         </ul>
                         <div class="card-body">
-                            <a href="#" class="btn btn-primary">Add to my collections</a>
+                            <button id="add-button" class="btn btn-primary" type="button" name="title" onclick="addToMovieCollection('${el.title}')">Add to my collections</button>
                         </div>
                     </div>
                     `)
@@ -188,6 +185,9 @@
             })
             .fail((xhr, text) => {
                 console.log(xhr, text)
+            })
+            .always(() => {
+
             })
         }
 
@@ -243,6 +243,27 @@
             })
         }
 
+        function addToMovieCollection(title){
+            // event.preventDefault()
+            console.log(title)
+            $.ajax({
+                method: 'POST',
+                url: `${baseUrl}/movies`,
+                headers: {
+                    access_token: localStorage.getItem('access_token')
+                },
+                data: {
+                    title
+                }
+            })
+            .done(response => {
+
+            })
+            .fail(err => {
+
+            })
+        }
+
         // Document ready
         $(document).ready(() => {
             auth()
@@ -268,6 +289,10 @@
             $("#formRegister").submit(function(event){
                 register(event)
             })
+
+            // $("#myMoviesNav").click(function(){
+
+            // })
         });
 
     </script>
